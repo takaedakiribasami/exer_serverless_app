@@ -1,10 +1,25 @@
-from flask import request
+from flask import request, redirect, url_for, render_template, flash, session
 from flask_blog import app
+from datetime import datetime
 
 
 @app.route('/')
 def show_entries():
-    return "全ての記事を表示"
+    entries = [
+        {
+            'id': 1,
+            'title': "はじめての投稿",
+            'text': "はじめての内容",
+            'created_at': datetime.now()
+        },
+        {
+            'id': 2,
+            'title': "2つ目の投稿",
+            'text': "2つ目の内容",
+            'created_at': datetime.now()
+        },
+    ]
+    return render_template('entries/index.html', entries=entries)
 
 
 @app.route('/entries', methods=['POST'])
@@ -14,17 +29,41 @@ def add_entry():
 
 @app.route('/entries/new', methods=['GET'])
 def new_entry():
-    return "記事の入力フォームを表示"
+    return render_template('entries/new.html')
 
 
 @app.route('/entries/<int:id>', methods=['GET'])
 def show_entry(id):
-    return "記事（{0}）を表示".format(id)
+    entry = {
+        'id': 1,
+        'title': 'はじめての投稿',
+        'text': 'はじめての内容',
+        'created_ad': datetime.now()
+    }
+    return render_template('entries/show.html', entry=entry)
 
 
 @app.route('/entries/<int:id>/edit', methods=['GET'])
 def edit_entry(id):
-    return "記事（{0}）の編集".format(id)
+    entries = [
+        {
+            'id': 1,
+            'title': "はじめての投稿",
+            'text': "はじめての内容",
+            'created_at': datetime.now()
+        },
+        {
+            'id': 2,
+            'title': "2つ目の投稿",
+            'text': "2つ目の内容",
+            'created_at': datetime.now()
+        },
+    ]
+    entry = None
+    for e in entries:
+        if e['id'] == id:
+            entry = e
+    return render_template('entries/edit.html', entry=entry)
 
 
 @app.route('/entries/<int:id>/update', methods=['POST'])
